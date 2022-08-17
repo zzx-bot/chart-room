@@ -1,0 +1,157 @@
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: var(--status-bar-height);
+  box-sizing: border-box;
+  padding-left: 1.75rem;
+  padding-right: 1.75rem;
+}
+.top-bar {
+  position: fixed;
+  top: 0;
+  z-index: 101;
+  width: 100%;
+  height: 2.75rem;
+  box-sizing: border-box;
+  margin-top: var(--status-bar-height);
+}
+.top-bar .top-bar-left {
+  display: inline-block;
+  margin-top: 0.375rem;
+}
+.top-bar .top-bar-left img {
+  width: 2.125rem;
+  height: 2.125rem;
+  border-radius: 0.5rem;
+}
+.top-bar .top-bar-left .goback {
+  width: 1.5625rem;
+  height: 1.5625rem;
+}
+.top-bar .top-bar-center {
+  position: absolute;
+  display: inline-block;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+.top-bar .top-bar-center img {
+  width: 2.75rem;
+  height: 1.3125rem;
+  padding-left: 2rem;
+}
+.top-bar .top-bar-right {
+  float: right;
+  display: inline-block;
+}
+.top-bar .top-bar-right .search {
+  width: 1.625rem;
+  height: 1.625rem;
+  margin: 0.5625rem 0 0 0.5625rem;
+}
+.top-bar .top-bar-right .addgroup {
+  width: 1.4375rem;
+  height: 1.4375rem;
+  margin: 0.5625rem 0 0.125rem 0.5625rem;
+}
+.top-bar .top-bar-right .text {
+  color: #333333;
+  height: 2.75rem;
+  line-height: 2.75rem;
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: var(--status-bar-height);
+  box-sizing: border-box;
+  padding-left: 1.75rem;
+  padding-right: 1.75rem;
+}
+.container .top-bar {
+  position: static;
+  font-size: 1.125rem;
+}
+.container .logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 7.0625rem;
+}
+.container .logo uni-image {
+  height: 2.75rem;
+  width: 5.75rem;
+}
+.container .main {
+  align-self: start;
+  width: 100%;
+}
+.container .main .login {
+  font-size: 1.75rem;
+  font-weight: 500;
+  line-height: 3.125rem;
+}
+.container .main .hellow {
+  color: rgba(39, 40, 50, 0.5);
+  font-size: 1.25rem;
+  line-height: 2.25rem;
+  margin-bottom: 1.5rem;
+}
+.container .main .inputs {
+  width: 100%;
+  font-size: 1.125rem;
+  color: #272832;
+}
+.container .main .inputs uni-input {
+  height: 2.75rem;
+  margin-top: 1.5rem;
+  font-weight: 500;
+  line-height: 2.75rem;
+  border-bottom: 0.0625rem solid rgba(39, 40, 50, 0.1);
+}
+.container .main .tip {
+  position: absolute;
+  font-size: 1.125rem;
+  color: #ff5d5b;
+  line-height: 1.75rem;
+}
+.container .submit {
+  height: 3.125rem;
+  width: 16.25rem;
+  border-radius: 1.5625rem;
+  margin-top: 3.75rem;
+  background: #ffe431;
+  line-height: 3.125rem;
+  text-align: center;
+  font-size: 1rem;
+  color: #272832;
+  letter-spacing: 0;
+  font-weight: 500;
+}
