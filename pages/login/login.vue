@@ -1,9 +1,9 @@
 <template>
-	<view class="container">
-		<view class="top-bar">
-			<view class="top-bar-right" @tap="toRegister"><p class="text">注册</p></view>
-		</view>
+	<view class="top-bar">
+		<view class="top-bar-right" @tap="toRegister"><p class="text">注册</p></view>
+	</view>
 
+	<view class="container">
 		<view class="logo"><image src="../../static/index/huo.png" alt="" /></view>
 		<view class="main">
 			<view class="inputs">
@@ -25,7 +25,9 @@
 					autocomplete="on"
 				/>
 			</view>
-			<view class="tip">{{ '用户名或密码错误！' }}</view>
+			<view class="tip" v-if="username.length > 0 && password.length > 0">
+				{{ '用户名或密码错误！' }}
+			</view>
 		</view>
 		<view class="submit" @tap="testFun">登录</view>
 	</view>
@@ -62,7 +64,18 @@ const testFun = () => {
 </script>
 
 <style lang="scss">
-@import '@/commons/css/topbar.scss';
+.top-bar {
+	width: 100%;
+	height: 88rpx;
+	position: relative;
+	font-size: 36rpx;
+	display: inline-block;
+	.top-bar-right {
+		position: absolute;
+		line-height: 88rpx;
+		right: 32rpx;
+	}
+}
 .container {
 	display: flex;
 	flex-direction: column;
@@ -71,10 +84,7 @@ const testFun = () => {
 	box-sizing: border-box;
 	padding-left: 56rpx;
 	padding-right: 56rpx;
-	.top-bar {
-		position: static;
-		font-size: 36rpx;
-	}
+
 	.logo {
 		display: flex;
 		align-items: center;

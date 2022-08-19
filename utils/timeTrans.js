@@ -1,5 +1,4 @@
-export const dateTime = () => {
-	let oldTime = new Date()
+export const dateTime = (oldTime) => {
 	let nowTime = new Date()
 	let d = oldTime.getTime()
 	let h = oldTime.getHours()
@@ -31,4 +30,18 @@ export const dateTime = () => {
 		m.toString().padStart(2, "0")
 		return Y + '/' + M + '/' + D
 	}
+}
+
+export const FormatDate = (time) => {
+
+	var date = new Date(time);
+
+	var year = date.getFullYear(),
+		month = date.getMonth() + 1, //月份是从0开始的
+		day = date.getDate()
+	var newTime = year + '-' +
+		(month < 10 ? '0' + month : month) + '-' +
+		(day < 10 ? '0' + day : day)
+
+	return newTime;
 }

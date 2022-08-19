@@ -17,7 +17,7 @@
 						placeholder="取一个名字吧"
 						placeholder-style="color:#aaa;font-weight:400;"
 					/>
-					<i class="icons" v-if="!isUserExist">
+					<i class="icons" v-if="!isUserExist && username !== ''">
 						<image src="../../static/login/right1.png" alt="" />
 					</i>
 					<view class="user-has-existed error-tip" v-if="isUserExist">
@@ -33,7 +33,7 @@
 						placeholder="你的邮箱多少呢"
 						placeholder-style="color:#aaa;font-weight:400;"
 					/>
-					<view class="email-error error-tip" v-if="isEmaiError">
+					<view class="email-error error-tip" v-if="isEmaiError && email !== ''">
 						{{ '邮箱格式错误' }}
 					</view>
 					<view class="email-error error-tip" v-if="!isEmailValid">
@@ -53,6 +53,9 @@
 					<i class="icons" @click="showPassword">
 						<image :src="`../../static/login/${lookUrl}.png`" alt="" />
 					</i>
+					<view class="password-tip" v-if="password.length < 6 && password.length > 0">
+						{{ '密码至少要六位' }}
+					</view>
 				</div>
 			</view>
 		</view>
@@ -224,6 +227,11 @@ const backLogin = () => {
 				position: relative;
 				.icons {
 					@include icon-position;
+				}
+				.password-tip {
+					position: absolute;
+					font-size: 28rpx;
+					color: $uni-color-warning;
 				}
 			}
 		}
