@@ -100,7 +100,7 @@ const hiddenAddFriend = () => {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @mixin abs-position {
 	position: absolute;
 	top: 50%;

@@ -1,41 +1,18 @@
 <template>
-	<view class="top-bar">
-		<view class="top-bar-right" @tap="toRegister"><p class="text">注册</p></view>
-	</view>
-
-	<view class="container">
-		<view class="logo"><image src="../../static/index/huo.png" alt="" /></view>
-		<view class="main">
-			<view class="inputs">
-				<view class="login">登录</view>
-				<view class="hellow">您好，欢迎来到yikes</view>
-
-				<input
-					type="text"
-					placeholder="用户名/邮箱"
-					v-model="account"
-					placeholder-style="color:#aaa;font-weight:400;"
-				/>
-
-				<input
-					type="password"
-					placeholder="输入密码"
-					v-model="password"
-					placeholder-style="color:#aaa;font-weight:400;"
-					autocomplete="on"
-				/>
-			</view>
-			<view class="tip" v-if="account.length > 0 && password.length > 0 && logindef">
-				{{ '用户名或密码错误！' }}
-			</view>
-		</view>
-		<view class="submit" @tap="login">登录</view>
-	</view>
+	<TopBar :show="false">
+		<template #left>
+			<div style="font-size: 32rpx;color: #272832;margin-left: 32rpx;">取消</div>
+		</template>
+		<template #center>
+			<div style="font-size: 40rpx;color: #272832; font-weight: 400;">创建群聊</div>
+		</template>
+	</TopBar>
 </template>
 
 <script lang="ts" setup>
 import { ref, reactive, toRefs } from 'vue'
 import { useStore } from 'vuex'
+import TopBar from '@/components/common/TopBar.vue'
 interface loginIntf {
 	account: string
 	password: string

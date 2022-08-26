@@ -6,7 +6,12 @@
 				border-bottom: 1rpx solid rgba(39, 40, 50, 0.1);"
 		>
 			<view class="top-bar-left">
-				<image class="avatar" src="../../static/index/avatar.png" alt="" />
+				<image
+					@tap="personInfo"
+					class="avatar"
+					src="../../static/index/avatar.png"
+					alt=""
+				/>
 			</view>
 			<view class="top-bar-center"><image src="../../static/index/huo.png" alt="" /></view>
 			<view class="top-bar-right">
@@ -40,21 +45,6 @@
 					</view>
 				</view>
 			</view>
-			<!-- <view class="frends" v-for="fir in firendsArr" :key="fir.id">
-				<view class="frend-list">
-					<view class="frend-list-left">
-						<view class="msgNum">{{ fir.tip }}</view>
-						<image :src="`../../static/avatar/${fir.imageUrl}`" alt="" />
-					</view>
-					<view class="frend-list-container">
-						<view class="fir-info">
-							<h2 class="nickName">{{ fir.name }}</h2>
-							<view class="msgtime">11:30</view>
-						</view>
-						<p class="message">{{ fir.msg }}</p>
-					</view>
-				</view>
-			</view> -->
 		</view>
 	</view>
 </template>
@@ -67,6 +57,12 @@ import { ref, reactive, onMounted } from 'vue'
 const toSearch = () => {
 	uni.navigateTo({
 		url: '/pages/search/search'
+	})
+}
+
+const personInfo = () => {
+	uni.navigateTo({
+		url: '/pages/userhome/userDetailInfo'
 	})
 }
 </script>
