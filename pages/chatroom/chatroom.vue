@@ -38,7 +38,7 @@
 					</view>
 				</view>
 			</view>
-			<div style="padding-top: var(--status-bar-height); height='20rpx';"></div>
+			<div :style="{ height: `${divheight}px` }"></div>
 		</scroll-view>
 		<BottomBar @addMsg="addMsg" ref="bottomRef" id="bottom"></BottomBar>
 	</view>
@@ -47,9 +47,21 @@
 <script lang="ts" setup>
 import TopBar from '@/components/common/TopBar.vue'
 import BottomBar from '@/components/common/BottomBar.vue'
+
 import { ref, watch, reactive, toRefs, onMounted, nextTick } from 'vue'
 import { useStore } from 'vuex'
 import { MsgDateTime } from '@/utils/timeTrans.js'
+
+const divheight = ref(0)
+const resizeObserver = new ResizeObserver(entries => {
+	for (let entry of entries) {
+		divheight.value = entry.target.offsetHeight - 54
+	}
+})
+
+onMounted(() => {
+	resizeObserver.observe(document.querySelector('#bottom'))
+})
 
 const arr = [
 	{
@@ -132,19 +144,17 @@ const msgArr = reactive(arr)
 const scrollId = ref(`test${msgArr[msgArr.length - 1].tip}`)
 
 const addMsg = msg => {
-	console.log(msgArr)
 	msgArr.push({
 		id: `${msgArr.length * 2}`,
 		image: 'http://dummyimage.com/400x400',
 		message: msg,
 		type: '0',
 		time: new Date(new Date().getTime() - 4 * 60 * 1000),
-		tip: `test${msgArr.length * 3}`
+		tip: `${msgArr.length * 3}`
 	})
 
 	nextTick(() => {
-		scrollId.value = msgArr[msgArr.length - 1].tip
-		console.log(scrollId.value)
+		scrollId.value = `test${msgArr[msgArr.length - 1].tip}`
 	})
 }
 // interface message {
@@ -199,11 +209,6 @@ const store = useStore()
 </script>
 
 <style lang="scss" scoped>
-.main {
-	height: 100%;
-	overflow: hidden;
-}
-
 ::-webkit-scrollbar {
 	width: 5rpx !important;
 	height: 10rpx !important;
@@ -221,81 +226,92 @@ const store = useStore()
 	-webkit-box-shadow: inset 0 0 6rpx rgba(0, 0, 0, 0.3);
 	background-color: #f2f2f2;
 }
-.container {
+
+.main {
+	height: 100%;
 	width: 100%;
-	height: calc(100% - 188rpx);
-	background: #f4f4f4;
+	position: absolute;
+	white-space: wrap;
 
-	.chat-main {
-		padding: 0 32rpx 50rpx 32rpx;
-		.chat-item {
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-
-			.send-time {
-				margin-top: 30rpx;
-				padding: 20rpx 0;
-				font-size: 24rpx;
-				color: rgba(39, 40, 50, 0.5);
-			}
-			.chat-msg {
-				margin-top: 30rpx;
-				width: 100%;
-				align-self: flex-start;
+	.container {
+		width: 100%;
+		height: calc(100% - 188rpx);
+		background: #f4f4f4;
+		overflow: hidden;
+		.chat-main {
+			width: 100%;
+			padding: 0 32rpx 50rpx 32rpx;
+			.chat-item {
 				display: flex;
-				align-items: start;
+				flex-direction: column;
+				align-items: center;
+				width: 100%;
+				max-width: 100%;
+				.send-time {
+					margin-top: 30rpx;
+					padding: 20rpx 0;
+					font-size: 24rpx;
+					color: rgba(39, 40, 50, 0.5);
+				}
+				.chat-msg {
+					width: 100%;
+					margin-top: 30rpx;
+					align-self: flex-start;
+					display: flex;
+					align-items: flex-start;
+					overflow: hidden;
+					.avatar {
+						width: 80rpx;
+						height: 80rpx;
+						border-radius: 20rpx;
+					}
+					.img-msg {
+						margin: 0 32rpx;
+						width: 284rpx;
+						height: 320rpx;
+						border-radius: 20rpx;
+					}
+					.text-msg {
+						margin: 0 32rpx;
+						word-break: break-all; //解决纯字母和数字不换行
+						max-width: calc(100% - 300rpx);
+						padding: 16rpx 22rpx;
+						position: relative;
+						line-height: 50rpx;
+						font-size: 32rpx;
+						color: #272832;
+						background: #fff;
+						border-radius: 20rpx;
+					}
+					.tri_left:before {
+						content: '';
+						width: 0px;
+						height: 0px;
+						border-top: 20rpx solid transparent;
+						border-bottom: 20rpx solid transparent;
+						border-right: 20rpx solid #fff;
+						position: absolute;
+						top: 16rpx;
+						left: -16rpx;
+					}
 
-				.avatar {
-					width: 80rpx;
-					height: 80rpx;
-					border-radius: 20rpx;
+					.tri_right:after {
+						content: '';
+						width: 0px;
+						height: 0px;
+						border-top: 20rpx solid transparent;
+						border-bottom: 20rpx solid transparent;
+						border-left: 20rpx solid $uni-color-primary;
+						position: absolute;
+						top: 16rpx;
+						right: -16rpx;
+					}
 				}
-				.img-msg {
-					margin: 0 32rpx;
-					width: 284rpx;
-					height: 320rpx;
-					border-radius: 20rpx;
-				}
-				.text-msg {
-					margin: 0 32rpx;
-					max-width: calc(100% - 300rpx);
-					padding: 16rpx 22rpx;
-					position: relative;
-					line-height: 50rpx;
-					font-size: 32rpx;
-					color: #272832;
-					background: #fff;
-					border-radius: 20rpx;
-				}
-				.tri_left:before {
-					content: '';
-					width: 0px;
-					height: 0px;
-					border-top: 20rpx solid transparent;
-					border-bottom: 20rpx solid transparent;
-					border-right: 20rpx solid #fff;
-					position: absolute;
-					top: 16rpx;
-					left: -16rpx;
-				}
-
-				.tri_right:after {
-					content: '';
-					width: 0px;
-					height: 0px;
-					border-top: 20rpx solid transparent;
-					border-bottom: 20rpx solid transparent;
-					border-left: 20rpx solid $uni-color-primary;
-					position: absolute;
-					top: 16rpx;
-					right: -16rpx;
-				}
-			}
-			.myself {
-				flex-direction: row-reverse;
-				.text-msg {
-					background: $uni-color-primary;
+				.myself {
+					flex-direction: row-reverse;
+					.text-msg {
+						background: $uni-color-primary;
+					}
 				}
 			}
 		}
