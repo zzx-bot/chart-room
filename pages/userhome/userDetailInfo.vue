@@ -1,6 +1,7 @@
 <template>
 	<transition name="main">
 		<div class="main" v-show="showMainPanel">
+			<image-cropper :src="tempFilePath" @confirm="confirm" @cancel="cancel"></image-cropper>
 			<TopBar :show="false">
 				<template #center>
 					详细信息
@@ -10,15 +11,7 @@
 				<div class="info-div">
 					<div class="infoItem head" @tap="upload">
 						<div class="label">头像</div>
-						<div class="info">
-							<image-cropper
-								:src="tempFilePath"
-								@confirm="confirm"
-								@cancel="cancel"
-							></image-cropper>
-
-							<image :src="cropFilePath" class="avatar"></image>
-						</div>
+						<div class="info"><image :src="cropFilePath" class="avatar"></image></div>
 						<image class="more" src="@/static/common/more.png" mode=""></image>
 					</div>
 					<div class="infoItem " data-index="昵称">
@@ -95,6 +88,8 @@ import { ref, reactive, computed } from 'vue'
 import { dateTime, FormatDate } from '@/utils/timeTrans.js'
 import TopBar from '@/components/common/TopBar.vue'
 
+import { tempFilePath, cropFilePath, upload, confirm, cancel } from '@/utils/upload.js'
+
 const nowDate = new Date()
 
 const date = ref(FormatDate(new Date().getTime()))
@@ -132,52 +127,6 @@ const bindPickerChange = e => {
 	index.value = e.detail.value
 }
 
-//头像裁剪
-const tempFilePath = ref('')
-const cropFilePath = ref('')
-const upload = () => {
-	uni.chooseImage({
-		count: 1, //默认9
-		sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
-		sourceType: ['album', 'cream'], //从相册选择
-		success: res => {
-			tempFilePath.value = res.tempFilePaths.shift()
-		}
-	})
-}
-const confirm = e => {
-	tempFilePath.value = ''
-	cropFilePath.value = e.detail.tempFilePath
-
-	// #ifdef APP-PLUS||MP
-	//除了H5端返回base64数据外，其他端都是返回临时地址，所以你要判断base64还是临时文件名，（用条件编译APP-PLUS||MP执行编译。）
-	//按我这里是先上传裁剪得来的临时文件地址然后得到临时文件名，
-	//待活你要判断是H5还是其他端传给后端类型参数让后端判断执行何种情况代码就OK了
-
-	uni.uploadFile({
-		url: '后端地址上传图片接口地址',
-		filePath: cropFilePath.value,
-		name: 'file',
-		fileType: 'image',
-		//formData:{},传递参数
-		success: uploadFileRes => {
-			var backstr = uploadFileRes.data
-			//自定义操作
-		},
-
-		fail(e) {
-			console.log('this is errormes ' + e.message)
-		}
-	})
-
-	//#endif
-}
-const cancel = () => {
-	console.log('canceled')
-	tempFilePath.value = ''
-}
-
-//#region
 const showMainPanel = ref(true)
 const title = ref('')
 const tipsInfo = ref('')
@@ -194,6 +143,8 @@ const modifyInfo = e => {
 	}
 }
 //endregion
+
+//#region
 </script>
 
 <style lang="scss">
@@ -215,6 +166,7 @@ const modifyInfo = e => {
 }
 .main {
 	height: 100%;
+	z-index: 998;
 }
 .content {
 	display: flex;

@@ -42,5 +42,5 @@ page {
 
 .content {
 	padding: 0 32rpx;
-
+	box-sizing: border-box;
 }

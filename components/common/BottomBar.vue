@@ -1,11 +1,17 @@
 <template>
 	<view class="bottom-bar">
 		<view class="bottom-bar-top">
-			<view class="bottom-bar-left" @tap="backOne">
-				<image class="voice" src="../../static/chatroom/voice.png" alt="" />
+			<view class="bottom-bar-left">
+				<image
+					@tap="showBtn('showVoicePanel')"
+					class="voice"
+					:src="`../../static/chatroom/${voice}.png`"
+					alt=""
+				/>
 			</view>
 			<view class="bottom-bar-center">
 				<textarea
+					v-show="!showVoicePanel"
 					v-model="msgText"
 					class="msg-input"
 					fixed="true"
@@ -14,28 +20,46 @@
 					maxlength="150"
 					auto-height="true"
 				></textarea>
+				<view
+					v-show="showVoicePanel"
+					class="msg-input"
+					style="height: 43rpx; text-align:center;line-height: 43rpx;"
+				>
+					请按住 讲话
+				</view>
 			</view>
 			<view class="bottom-bar-right">
 				<image
 					class="emoji"
-					src="../../static/chatroom/open-mouth.png"
+					:src="`../../static/chatroom/${emoji}.png`"
 					alt=""
 					mode="aspectFill"
-					@tap="emojiPanel"
+					@tap="showBtn('showEmojiPanel')"
 				/>
 				<image
-					v-show="!msgText"
+					v-show="!msgText || showVoicePanel"
 					class="plus"
-					@tap="plusPanel"
+					@tap="showBtn('showPlusPanel')"
 					src="../../static/chatroom/plus.png"
 					alt=""
 					mode="aspectFill"
 				/>
-				<button v-show="msgText" size="mini" type="primary" @tap="sendMsg">发送</button>
+				<button
+					v-show="msgText && !showVoicePanel"
+					size="mini"
+					type="primary"
+					@tap="sendMsg"
+				>
+					发送
+				</button>
 			</view>
 		</view>
 
-		<EmojiPanel v-show="showEmojiPanel"></EmojiPanel>
+		<EmojiPanel
+			v-show="showEmojiPanel"
+			@addEmoji="addEmoji"
+			@deleteLast="deleteLast"
+		></EmojiPanel>
 		<PlusPanel v-show="showPlusPanel"></PlusPanel>
 	</view>
 </template>
@@ -43,7 +67,11 @@
 <script lang="ts" setup>
 import EmojiPanel from '@/components/common/EmojiPanel/EmojiPanel.vue'
 import PlusPanel from '@/components/common/PlusPanel/PlusPanel.vue'
-import { ref, defineProps, defineEmits } from 'vue'
+import { ref, reactive, computed, toRefs, defineProps, defineEmits } from 'vue'
+
+import GraphemeSplitter from 'grapheme-splitter'
+
+const splitter = new GraphemeSplitter()
 
 const backOne = () => {
 	uni.navigateBack({
@@ -53,21 +81,37 @@ const backOne = () => {
 const msgText = ref('')
 const emit = defineEmits(['addMsg'])
 const sendMsg = () => {
-	emit('addMsg', msgText.value)
+	emit('addMsg', { msg: msgText.value, type: '0' })
 	msgText.value = ''
 }
-
-const showEmojiPanel = ref(false)
-const emojiPanel = () => {
-	showEmojiPanel.value = !showEmojiPanel.value
-	showPlusPanel.value = false
+const deleteLast = () => {
+	let textArr = splitter.splitGraphemes(msgText.value)
+	textArr.pop()
+	msgText.value = textArr.join('')
 }
 
-const showPlusPanel = ref(false)
-const plusPanel = () => {
-	showPlusPanel.value = !showPlusPanel.value
-	showEmojiPanel.value = false
+const addEmoji = emoji => {
+	msgText.value += emoji
 }
+//#region按钮转换
+
+const buttonStatus = reactive({
+	showVoicePanel: false,
+	showEmojiPanel: false,
+	showPlusPanel: false
+})
+
+const { showVoicePanel, showEmojiPanel, showPlusPanel } = toRefs(buttonStatus)
+const voice = computed(() => (showVoicePanel.value ? 'jp' : 'voice'))
+const emoji = computed(() => (showEmojiPanel.value ? 'jp' : 'open-mouth'))
+const showBtn = propName => {
+	let preStatus = buttonStatus[propName]
+	for (let item in buttonStatus) {
+		buttonStatus[item] = false
+	}
+	buttonStatus[propName] = !preStatus
+}
+//#endregion
 </script>
 
 <style lang="scss" scoped>
@@ -82,7 +126,7 @@ const plusPanel = () => {
 
 	.bottom-bar-top {
 		display: flex;
-		align-items: end;
+		align-items: flex-end;
 		justify-content: space-between;
 		flex-wrap: wrap;
 		padding: 8rpx 0;

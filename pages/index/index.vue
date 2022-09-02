@@ -22,7 +22,12 @@
 						src="../../static/index/search.png"
 						alt=""
 					/>
-					<image class="addgroup" src="../../static/index/addgroup.png" alt="" />
+					<image
+						@tap="toNewGroup"
+						class="addgroup"
+						src="../../static/index/addgroup.png"
+						alt=""
+					/>
 				</view>
 			</view>
 		</view>
@@ -51,9 +56,49 @@
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
-// import datas from '../../commons/js/data.js'
+const user = reactive([
+	{
+		chosed: false,
+		imgUrl: '../../static/avatar/two.png',
+		name: 'false'
+	},
+	{
+		chosed: true,
+		imgUrl: '../../static/avatar/one.png',
+		name: '名字'
+	},
+	{
+		chosed: false,
+		imgUrl: '../../static/avatar/three.png',
+		name: '我的名字有点长长长长长长长长长长长长长长长长长长长长长长长长'
+	},
+	{
+		chosed: true,
+		imgUrl: '../../static/avatar/three.png',
+		name: '名字'
+	},
+	{
+		chosed: false,
+		imgUrl: '../../static/avatar/three.png',
+		name: '名字'
+	},
+	{
+		chosed: false,
+		imgUrl: '../../static/avatar/three.png',
+		name: '我的名字有点长长长长长长长长长长长长长长长长长长长长长长长长'
+	},
+	{
+		chosed: true,
+		imgUrl: '../../static/avatar/three.png',
+		name: '名字'
+	},
+	{
+		chosed: false,
+		imgUrl: '../../static/avatar/three.png',
+		name: '名字'
+	}
+])
 
-// const firendsArr = reactive(datas.firends())
 const toSearch = () => {
 	uni.navigateTo({
 		url: '/pages/search/search'
@@ -63,6 +108,11 @@ const toSearch = () => {
 const personInfo = () => {
 	uni.navigateTo({
 		url: '/pages/userhome/userDetailInfo'
+	})
+}
+const toNewGroup = () => {
+	uni.navigateTo({
+		url: '/pages/newGroup/newGroup'
 	})
 }
 </script>

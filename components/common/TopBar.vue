@@ -13,12 +13,13 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps } from 'vue'
+import { defineProps, withDefaults } from 'vue'
 interface propInt {
 	show: boolean
 }
-const props = defineProps<propInt>()
+const props = withDefaults(defineProps<{ show: boolean }>(), { show: false })
 const { show } = props
+console.log(show)
 const backOne = () => {
 	uni.navigateBack({
 		delta: 1
@@ -30,15 +31,14 @@ const backOne = () => {
 .top-bar {
 	height: 88rpx;
 	width: 100%;
-	// padding: 0 32rpx;
+	box-sizing: border-box;
+	padding: 0 32rpx;
 	position: fixed;
 	top: 0;
 	z-index: 101;
 	display: flex;
 	align-items: center;
-
 	justify-content: space-between;
-
 	background: rgba(255, 255, 255, 0.96);
 	border-bottom: 1rpx solid rgba(39, 40, 50, 0.1);
 	.top-bar-left {
@@ -46,7 +46,6 @@ const backOne = () => {
 		align-items: center;
 		height: 88rpx;
 		image {
-			padding-left: 32rpx;
 			width: 50rpx;
 			height: 50rpx;
 		}
@@ -61,7 +60,6 @@ const backOne = () => {
 	}
 	.top-bar-right {
 		.more {
-			padding-right: 32rpx;
 			width: 50rpx;
 			height: 12rpx;
 		}

@@ -5,6 +5,7 @@
 		v-show="show"
 		@touchmove.stop.prevent=""
 		catchtouchmove="false"
+		style=" z-index: 1998;"
 	>
 		<view class="cropper-box">
 			<view
@@ -639,7 +640,7 @@ export default {
         left: 0;
         right: 0;
         bottom: 0;
-        z-index: 998;
+
         box-sizing: border-box;
         user-select: none;
         -webkit-user-select: none;

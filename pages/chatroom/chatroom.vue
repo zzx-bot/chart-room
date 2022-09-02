@@ -19,12 +19,14 @@
 					:key="item.id"
 					:id="'test' + item.tip"
 				>
-					<view class="send-time" v-if="item.time">{{ MsgDateTime(item.time) }}</view>
-					<view :class="['chat-msg', { myself: false }]">
+					<view class="send-time" v-if="!item.unShowTime">
+						{{ MsgDateTime(item.time) }}
+					</view>
+					<view :class="['chat-msg', { myself: myself }]">
 						<image class="avatar" src="@/static/avatar/three.jpg" mode=""></image>
 						<view
 							v-if="item.type == 0"
-							:class="['text-msg', { tri_left: true }, { tri_right: false }]"
+							:class="['text-msg', { tri_left: !myself }, { tri_right: myself }]"
 						>
 							{{ item.message }}
 						</view>
@@ -35,10 +37,23 @@
 							:src="item.message"
 							mode="aspectFill"
 						></image>
+						<view
+							v-if="item.type == 3"
+							:class="['text-msg', { tri_left: !myself }, { tri_right: myself }]"
+						>
+							{{ item.message.time + '"' }}
+
+							<image
+								:style="{ 'padding-left': item.message.time + 'px' }"
+								@tap="previewImg(item.message)"
+								class="voice-msg"
+								src="@/static/chatroom/yy.png"
+							></image>
+						</view>
 					</view>
 				</view>
 			</view>
-			<div :style="{ height: `${divheight}px` }"></div>
+			<div :style="{ height: divheight + 'px' }"></div>
 		</scroll-view>
 		<BottomBar @addMsg="addMsg" ref="bottomRef" id="bottom"></BottomBar>
 	</view>
@@ -48,22 +63,36 @@
 import TopBar from '@/components/common/TopBar.vue'
 import BottomBar from '@/components/common/BottomBar.vue'
 
-import { ref, watch, reactive, toRefs, onMounted, nextTick } from 'vue'
+import { ref, watch, reactive, toRefs, onMounted, nextTick, provide } from 'vue'
 import { useStore } from 'vuex'
 import { MsgDateTime } from '@/utils/timeTrans.js'
 
+const myself = ref(true)
 const divheight = ref(0)
 const resizeObserver = new ResizeObserver(entries => {
 	for (let entry of entries) {
 		divheight.value = entry.target.offsetHeight - 54
+		// console.log(divheight.value)
 	}
 })
 
 onMounted(() => {
 	resizeObserver.observe(document.querySelector('#bottom'))
 })
-
-const arr = [
+interface voiceIntf {
+	msg: string
+	time: string
+}
+interface messageIntf {
+	id: string
+	image: string
+	message: string | voiceIntf
+	type: string
+	time: Date
+	tip: string
+	unShowTime?: boolean
+}
+const arr: messageIntf[] = [
 	{
 		id: '1',
 		image: 'http://dummyimage.com/400x400',
@@ -137,31 +166,53 @@ const arr = [
 		type: '1',
 		time: new Date(new Date().getTime() - 4 * 60 * 1000),
 		tip: '9'
+	},
+
+	{
+		id: '9',
+		image: 'http://dummyimage.com/400x400',
+		message: {
+			msg: 'aaaaaaaa',
+			time: '2'
+		},
+		type: '3',
+		time: new Date(new Date().getTime() - 4 * 60 * 1000),
+		tip: '9'
 	}
 ]
 
 const msgArr = reactive(arr)
 const scrollId = ref(`test${msgArr[msgArr.length - 1].tip}`)
 
-const addMsg = msg => {
-	msgArr.push({
+const addMsg = ({ msg, type }) => {
+	let msgTemp: messageIntf = {
 		id: `${msgArr.length * 2}`,
 		image: 'http://dummyimage.com/400x400',
 		message: msg,
-		type: '0',
+		type: type,
 		time: new Date(new Date().getTime() - 4 * 60 * 1000),
 		tip: `${msgArr.length * 3}`
-	})
+	}
+
+	if (msgTemp.type == '1') {
+		console.log(type, msg)
+		imgUrl.push(msg)
+	}
+	if (msgArr.length > 0) {
+		if (
+			msgTemp.time.getTime() - msgArr[msgArr.length - 1].time.getTime() <
+			1000 * 60 * 60 * 5
+		) {
+			msgTemp.unShowTime = true
+		}
+	}
+	msgArr.push(msgTemp)
 
 	nextTick(() => {
 		scrollId.value = `test${msgArr[msgArr.length - 1].tip}`
 	})
 }
-// interface message {
-// 	time: string
-// 	textMsg: string
-// 	imgMsg: string
-// }
+provide('addMsg', addMsg)
 
 // const userLoginInfo = reactive<message>({
 // 	time: 'admin123',
@@ -172,16 +223,13 @@ const addMsg = msg => {
 // const { time, textMsg, imgMsg } = toRefs(userLoginInfo)
 
 const imgUrl = []
-let lastItem = msgArr[0].time
 msgArr.forEach((cur, index, arr) => {
 	if (cur.type == '1') {
 		imgUrl.unshift(cur.message)
 	}
 	if (index !== 0) {
-		let space = cur.time.getTime() - lastItem.getTime()
-		lastItem = cur.time
-		if (space < 1000 * 60 * 60 * 5) {
-			cur.time = null
+		if (cur.time.getTime() - arr[index - 1].time.getTime() < 1000 * 60 * 60 * 5) {
+			cur.unShowTime = true
 		}
 	}
 })
@@ -240,6 +288,7 @@ const store = useStore()
 		overflow: hidden;
 		.chat-main {
 			width: 100%;
+			box-sizing: border-box;
 			padding: 0 32rpx 50rpx 32rpx;
 			.chat-item {
 				display: flex;
@@ -282,7 +331,13 @@ const store = useStore()
 						color: #272832;
 						background: #fff;
 						border-radius: 20rpx;
+						.voice-msg {
+							width: 32rpx;
+							height: 36rpx;
+							transform: translateY(3rpx);
+						}
 					}
+
 					.tri_left:before {
 						content: '';
 						width: 0px;
