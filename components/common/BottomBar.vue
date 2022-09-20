@@ -22,10 +22,13 @@
 				></textarea>
 				<view
 					v-show="showVoicePanel"
+					@touchstart="startRecord"
+					@touchend="endRecord"
+					@touchmove.stop.prevent="cancelRecord"
 					class="msg-input"
 					style="height: 43rpx; text-align:center;line-height: 43rpx;"
 				>
-					请按住 讲话
+					按住 讲话
 				</view>
 			</view>
 			<view class="bottom-bar-right">
@@ -61,6 +64,14 @@
 			@deleteLast="deleteLast"
 		></EmojiPanel>
 		<PlusPanel v-show="showPlusPanel"></PlusPanel>
+		<view class="mask" v-if="showMask">
+			<view class="base-gd">
+				<view class="progress" :style="{ width: duringTime * 9 + 60 + 'rpx' }">
+					{{ duringTime + '"' }}
+				</view>
+			</view>
+		</view>
+		<view class="press-btn" v-if="showMask">上滑取消</view>
 	</view>
 </template>
 
@@ -100,7 +111,6 @@ const buttonStatus = reactive({
 	showEmojiPanel: false,
 	showPlusPanel: false
 })
-
 const { showVoicePanel, showEmojiPanel, showPlusPanel } = toRefs(buttonStatus)
 const voice = computed(() => (showVoicePanel.value ? 'jp' : 'voice'))
 const emoji = computed(() => (showEmojiPanel.value ? 'jp' : 'open-mouth'))
@@ -112,6 +122,52 @@ const showBtn = propName => {
 	buttonStatus[propName] = !preStatus
 }
 //#endregion
+
+// 录音
+
+// const recorderManager = uni.getRecorderManager()
+const showMask = ref(false)
+let startTime = null
+let endTime = null
+let timer = null
+const duringTime = ref(0)
+let voicePath = ''
+// recorderManager.onStop(function(res) {
+// 	console.log('recorder stop' + JSON.stringify(res))
+// 	voicePath = res.tempFilePath
+// })
+const startRecord = () => {
+	console.log('开始')
+	startTime = new Date()
+	showMask.value = true
+	// recorderManager.start()
+
+	timer = setInterval(() => {
+		endTime = new Date()
+		duringTime.value = Math.floor((endTime - startTime) / 1000)
+	}, 1000)
+}
+
+const endRecord = () => {
+	showMask.value = false
+	console.log('结束')
+	endTime = new Date()
+	let time = Math.floor((endTime - startTime) / 1000)
+	console.log(time) // 秒数
+	emit('addMsg', { msg: { msg: '111111111', time }, type: '3' })
+	clearInterval(timer)
+	// recorderManager.stop()
+}
+const cancelRecord = () => {
+	// recorderManager.stop()
+	console.log('上滑取消')
+}
+const touchStart = () => {
+	console.log('touchStart')
+}
+const touchMove = () => {
+	console.log('touchMove')
+}
 </script>
 
 <style lang="scss" scoped>
@@ -130,7 +186,8 @@ const showBtn = propName => {
 		justify-content: space-between;
 		flex-wrap: wrap;
 		padding: 8rpx 0;
-		border: 2rpx solid rgba(39, 40, 50, 0.1);
+		border-top: 2rpx solid rgba(39, 40, 50, 0.1);
+		border-bottom: 2rpx solid rgba(39, 40, 50, 0.1);
 		.bottom-bar-left {
 			display: flex;
 			align-items: center;
@@ -172,8 +229,49 @@ const showBtn = propName => {
 		}
 	}
 }
-</style>
-<style>
+.mask {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	height: 100vh;
+	z-index: 101;
+	background: $uni-bg-color-mask;
+	.base-gd {
+		position: absolute;
+		left: 50%;
+		top: 35%;
+		transform: translateX(-50%);
+		height: 60rpx;
+		background: rgba(244, 244, 244, 0.6);
+		width: 80%;
+		border-radius: 30rpx;
+	}
+	.progress {
+		position: absolute;
+		left: 50%;
+		transform: translateX(-50%);
+		height: 60rpx;
+		background: $uni-color-primary;
+		width: 60rpx;
+		max-width: 100%;
+		border-radius: 30rpx;
+		text-align: center;
+		line-height: 60rpx;
+	}
+}
+.press-btn {
+	position: relative;
+	width: 100%;
+	z-index: 102;
+	height: 180rpx;
+	background: #eee;
+	border-radius: 70% 70% 0 0;
+	border-top: 11rpx solid #fff;
+	z-index: 1001;
+	text-align: center;
+	color: $uni-bg-color-mask;
+}
+
 button {
 	margin: 0 32rpx 8rpx 0;
 }

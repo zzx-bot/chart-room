@@ -133,6 +133,7 @@ const tipsInfo = ref('')
 
 const mpvuePicker = ref()
 const modifyInfo = e => {
+	console.log(e)
 	let name = e.target.dataset.index
 	if (name) {
 		showMainPanel.value = false

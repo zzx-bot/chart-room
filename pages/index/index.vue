@@ -1,5 +1,5 @@
 <template>
-	<view class="container">
+	<view class="container" id="container">
 		<view
 			class="top-bar"
 			style="background: rgba(255, 255, 255, 0.96);
@@ -31,7 +31,7 @@
 				</view>
 			</view>
 		</view>
-		<view class="chat-list">
+		<view class="chat-list" @click="onClick" data-index="insd">
 			<view class="frends">
 				<view :class="['frend-list']">
 					<view class="frend-list-left">
@@ -41,12 +41,29 @@
 					<view class="frend-list-container">
 						<view class="fir-info">
 							<h2 class="nickName">浩</h2>
-							<view class="msgtime">11:30</view>
+							<p class="message">
+								相遇不一定有结局，但一定有意义相遇不一定有结局，但一定有意义
+							</p>
 						</view>
+						<view class="msgtime">11:30</view>
+					</view>
+				</view>
+			</view>
 
-						<p class="message">
-							相遇不一定有结局，但一定有意义相遇不一定有结局，但一定有意义
-						</p>
+			<view class="frends" v-for="item in user" :key="item.id" :data-index="item.id">
+				<view :class="['frend-list']">
+					<view class="frend-list-left">
+						<view class="msgNum">{{ item.msgNum }}</view>
+						<image :src="item.imgUrl" alt="" />
+					</view>
+					<view class="frend-list-container">
+						<view class="fir-info">
+							<h2 class="nickName">{{ item.name }}</h2>
+							<p class="message">
+								相遇不一定有结局，但一定有意义相遇不一定有结局，但一定有意义
+							</p>
+						</view>
+						<view class="msgtime">11:30</view>
 					</view>
 				</view>
 			</view>
@@ -58,47 +75,80 @@
 import { ref, reactive, onMounted } from 'vue'
 const user = reactive([
 	{
+		id: 1,
 		chosed: false,
+		msgNum: 11,
 		imgUrl: '../../static/avatar/two.png',
-		name: 'false'
+		name: 'false',
+		time: new Date()
 	},
 	{
+		id: 2,
 		chosed: true,
+		msgNum: 11,
 		imgUrl: '../../static/avatar/one.png',
-		name: '名字'
+		name: '名字',
+		time: new Date()
 	},
 	{
+		id: 3,
 		chosed: false,
+		msgNum: 11,
 		imgUrl: '../../static/avatar/three.png',
-		name: '我的名字有点长长长长长长长长长长长长长长长长长长长长长长长长'
+		name: '我的名字有点长长长长长长长长长长ccc',
+		time: new Date()
 	},
 	{
+		id: 4,
 		chosed: true,
+		msgNum: 11,
 		imgUrl: '../../static/avatar/three.png',
-		name: '名字'
+		name: '名字',
+		time: new Date()
 	},
 	{
+		id: 5,
 		chosed: false,
+		msgNum: 11,
 		imgUrl: '../../static/avatar/three.png',
-		name: '名字'
+		name: '名字',
+		time: new Date()
 	},
 	{
+		id: 6,
 		chosed: false,
+		msgNum: 11,
 		imgUrl: '../../static/avatar/three.png',
-		name: '我的名字有点长长长长长长长长长长长长长长长长长长长长长长长长'
+		name: '我的名字有点长长长长长长长'
 	},
 	{
+		id: 7,
 		chosed: true,
+		msgNum: 11,
 		imgUrl: '../../static/avatar/three.png',
-		name: '名字'
+		name: '名字',
+		time: new Date()
 	},
 	{
+		id: 8,
 		chosed: false,
+		msgNum: 11,
 		imgUrl: '../../static/avatar/three.png',
-		name: '名字'
+		name: '名字',
+		time: new Date()
 	}
 ])
 
+onMounted(() => {
+	// var parent = document.getElementById('container')
+	// parent.addEventListener(
+	// 	'click',
+	// 	function(e) {
+	// 		console.log(e)
+	// 	},
+	// 	false
+	// )
+})
 const toSearch = () => {
 	uni.navigateTo({
 		url: '/pages/search/search'
@@ -110,6 +160,10 @@ const personInfo = () => {
 		url: '/pages/userhome/userDetailInfo'
 	})
 }
+const onClick = evt => {
+	console.log(evt)
+}
+
 const toNewGroup = () => {
 	uni.navigateTo({
 		url: '/pages/newGroup/newGroup'
@@ -176,41 +230,44 @@ const toNewGroup = () => {
 				.frend-list-container {
 					height: 100%;
 					width: 100%;
-
+					display: flex;
 					margin-right: auto;
 					.fir-info {
 						height: 50rpx;
+						width: 0;
+						flex: 1;
 						line-height: 50rpx;
 						margin: 10rpx 0;
+
 						.nickName {
-							display: inline;
+							display: block;
+							overflow: hidden;
+							white-space: nowrap;
+							text-overflow: ellipsis;
 							font-size: 32rpx;
 							color: #272832;
-							letter-spacing: -1.24rpx;
-							font-weight: 400;
 						}
-						.msgtime {
-							float: right;
-							align-self: flex-start;
-							font-size: 24rpx;
-							color: rgba(39, 40, 50, 0.4);
-							letter-spacing: -0.82rpx;
+						.message {
+							position: relative;
+
+							margin-top: 4rpx;
+							overflow: hidden;
+							white-space: nowrap;
+							text-overflow: ellipsis;
+							height: 40rpx;
+							line-height: 40rpx;
+
+							font-size: 28rpx;
+							color: rgba(39, 40, 50, 0.6);
 						}
 					}
 
-					.message {
-						position: relative;
-						overflow: hidden;
-						margin-top: 4rpx;
-						text-overflow: ellipsis;
-						display: -webkit-box;
-						height: 40rpx;
-						line-height: 40rpx;
-						-webkit-line-clamp: 1;
-						-webkit-box-orient: vertical;
-						font-size: 28rpx;
-						color: rgba(39, 40, 50, 0.6);
-						letter-spacing: -0.96rpx;
+					.msgtime {
+						width: 50rpx;
+						margin-top: 10rpx;
+						align-self: flex-start;
+						font-size: 24rpx;
+						color: rgba(39, 40, 50, 0.4);
 					}
 				}
 			}

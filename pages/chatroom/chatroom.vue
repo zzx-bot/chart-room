@@ -39,13 +39,20 @@
 						></image>
 						<view
 							v-if="item.type == 3"
-							:class="['text-msg', { tri_left: !myself }, { tri_right: myself }]"
+							:class="[
+								'text-msg',
+								{ 'voice-left': !myself },
+								{ tri_left: !myself },
+								{ tri_right: myself }
+							]"
+							style="white-space:nowrap;"
 						>
 							{{ item.message.time + '"' }}
+							<span :style="{ width: item.message.time * 2.5 + 'px' }"></span>
+							&ensp;
 
 							<image
-								:style="{ 'padding-left': item.message.time + 'px' }"
-								@tap="previewImg(item.message)"
+								@tap="playVoice(item.message)"
 								class="voice-msg"
 								src="@/static/chatroom/yy.png"
 							></image>
@@ -173,7 +180,7 @@ const arr: messageIntf[] = [
 		image: 'http://dummyimage.com/400x400',
 		message: {
 			msg: 'aaaaaaaa',
-			time: '2'
+			time: '21'
 		},
 		type: '3',
 		time: new Date(new Date().getTime() - 4 * 60 * 1000),
@@ -254,6 +261,17 @@ const previewImg = msg => {
 }
 
 const store = useStore()
+
+//播放语音
+const innerAudioContext = uni.createInnerAudioContext()
+innerAudioContext.autoplay = true
+const playVoice = voicePath => {
+	console.log('播放录音', voicePath)
+	// if (voicePath) {
+	// 	innerAudioContext.src = voicePath
+	// 	innerAudioContext.play()
+	// }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -274,7 +292,9 @@ const store = useStore()
 	-webkit-box-shadow: inset 0 0 6rpx rgba(0, 0, 0, 0.3);
 	background-color: #f2f2f2;
 }
-
+.mask {
+	background: $uni-bg-color-mask;
+}
 .main {
 	height: 100%;
 	width: 100%;
@@ -322,6 +342,8 @@ const store = useStore()
 					}
 					.text-msg {
 						margin: 0 32rpx;
+						display: flex;
+						align-items: center;
 						word-break: break-all; //解决纯字母和数字不换行
 						max-width: calc(100% - 300rpx);
 						padding: 16rpx 22rpx;
@@ -334,10 +356,14 @@ const store = useStore()
 						.voice-msg {
 							width: 32rpx;
 							height: 36rpx;
-							transform: translateY(3rpx);
 						}
 					}
-
+					.voice-left {
+						flex-direction: row-reverse;
+						.voice-msg {
+							transform: rotateY(180deg);
+						}
+					}
 					.tri_left:before {
 						content: '';
 						width: 0px;

@@ -1,14 +1,12 @@
 <template>
-	<TopBar :show="true" />
+	<TopBar :show="true" style="background: transparent; border:0">
+		<template #center>
+			<view></view>
+		</template>
+	</TopBar>
 	<view class="container">
 		<view class="bg">
-			<view :class="{ 'bg-bai': showAddPanel }"></view>
-			<image
-				:class="[{ 'bg-image': !showAddPanel }]"
-				src="../../static/common/son.jpg"
-				mode="aspectFill"
-				alt=""
-			/>
+			<image class=" bg-image" src="../../static/common/son.jpg" mode="aspectFill" alt="" />
 		</view>
 		<Transition name="fade">
 			<view class="main">
@@ -119,12 +117,6 @@ const hiddenAddFriend = () => {
 		top: 0;
 		width: 100%;
 		height: 100%;
-		.bg-bai {
-			width: 100%;
-			height: 100%;
-			background: rgba(255, 228, 49, 1);
-			transition: height 0.3s ease;
-		}
 		.bg-image {
 			position: absolute;
 			left: -5%;
@@ -143,6 +135,8 @@ const hiddenAddFriend = () => {
 		width: 100%;
 		height: 100%;
 		margin-top: 168rpx;
+		font-size: 28rpx;
+		color: #272832;
 		.headimage {
 			animation-name: example2;
 			animation-duration: 0.3s;
@@ -155,7 +149,7 @@ const hiddenAddFriend = () => {
 				width: 100%;
 				height: 100%;
 				border-radius: $uni-border-radius-lg;
-				border: 6px solid #ffffff;
+				border: 6rpx solid #ffffff;
 			}
 			.gender {
 				width: 64rpx;
@@ -186,7 +180,6 @@ const hiddenAddFriend = () => {
 		}
 		.beizhu {
 			font-size: 52rpx;
-			color: #272832;
 			height: 74rpx;
 			line-height: 74rpx;
 			margin-top: 40rpx;
@@ -194,18 +187,17 @@ const hiddenAddFriend = () => {
 		.nickName {
 			height: 40rpx;
 			line-height: 40rpx;
-			font-size: 28rpx;
-			color: #272832;
 		}
 		.des {
-			margin-top: 20rpx;
-			ont-size: 28px;
-			color: #272832;
+			line-height: 48rpx;
+			margin: 20rpx 90rpx;
 		}
 	}
 	.bottom {
 		position: fixed;
 		bottom: 36rpx;
+		left: 50%;
+		transform: translateX(-50%);
 		width: 684rpx;
 		height: 80rpx;
 		background: #ffe431;
@@ -296,7 +288,7 @@ const hiddenAddFriend = () => {
 		width: 240rpx;
 		height: 240rpx;
 		border-radius: $uni-border-radius-base;
-		box-shadow: 0px 36px 40px 0px rgba(39, 40, 50, 0.25);
+		box-shadow: 0rpx 36rpx 40rpx 0rpx rgba(39, 40, 50, 0.25);
 	}
 }
 @keyframes example2 {
@@ -305,7 +297,7 @@ const hiddenAddFriend = () => {
 		width: 240rpx;
 		height: 240rpx;
 		border-radius: $uni-border-radius-base;
-		box-shadow: 0px 36px 40px 0px rgba(39, 40, 50, 0.25);
+		box-shadow: 0px 36rpx 40rpx 0rpx rgba(39, 40, 50, 0.25);
 	}
 	to {
 		z-index: 10;
