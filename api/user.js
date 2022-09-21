@@ -10,3 +10,15 @@ export function login(data) {
 		data
 	})
 }
+
+/**
+ *    注册请求
+ */
+export function signUpApi(data) {
+	console.log(data);
+	return request({
+		url: '/signup/adduser',
+		method: 'POST',
+		data
+	})
+}

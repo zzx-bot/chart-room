@@ -1,5 +1,5 @@
 <template>
-	<view class="container" id="container">
+	<view class="container">
 		<view
 			class="top-bar"
 			style="background: rgba(255, 255, 255, 0.96);
@@ -31,8 +31,8 @@
 				</view>
 			</view>
 		</view>
-		<view class="chat-list" @click="onClick" data-index="insd">
-			<view class="frends">
+		<view class="chat-list" id="chatList">
+			<view class="friends">
 				<view :class="['frend-list']">
 					<view class="frend-list-left">
 						<view class="msgNum">{{ '99+' }}</view>
@@ -50,13 +50,13 @@
 				</view>
 			</view>
 
-			<view class="frends" v-for="item in user" :key="item.id" :data-index="item.id">
+			<li class="friends" v-for="item in user" :data-index="item.name" :key="item.id">
 				<view :class="['frend-list']">
-					<view class="frend-list-left">
+					<div class="frend-list-left">
 						<view class="msgNum">{{ item.msgNum }}</view>
 						<image :src="item.imgUrl" alt="" />
-					</view>
-					<view class="frend-list-container">
+					</div>
+					<div class="frend-list-container" :data-index="item.id">
 						<view class="fir-info">
 							<h2 class="nickName">{{ item.name }}</h2>
 							<p class="message">
@@ -64,15 +64,15 @@
 							</p>
 						</view>
 						<view class="msgtime">11:30</view>
-					</view>
+					</div>
 				</view>
-			</view>
+			</li>
 		</view>
 	</view>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, onBeforeUnmount } from 'vue'
 const user = reactive([
 	{
 		id: 1,
@@ -138,17 +138,39 @@ const user = reactive([
 		time: new Date()
 	}
 ])
+const toChatView = e => {
+	// console.log(e)
+	// console.log(e.currentTarget)
 
+	// 获取到目标阶段指向的元素
+	var target = event.target || event.srcElement
+	// 获取到代理事件的函数
+	var currentTarget = event.currentTarget
+	// 遍历外层并且匹配
+	while (target !== currentTarget) {
+		// 判断是否匹配到我们所需要的元素上
+		if (target.matches('friends')) {
+			var sTarget = target
+			// 执行绑定的函数，注意 this
+			// foo.call(sTarget, Array.prototype.slice.call(arguments))
+			console.log('匹配到了！', target.dataset.index)
+			uni.navigateTo({
+				url: '/pages/chatroom/chatroom'
+			})
+		}
+
+		target = target.parentNode
+	}
+}
 onMounted(() => {
-	// var parent = document.getElementById('container')
-	// parent.addEventListener(
-	// 	'click',
-	// 	function(e) {
-	// 		console.log(e)
-	// 	},
-	// 	false
-	// )
+	let parent = document.getElementById('chatList')
+	parent.addEventListener('click', toChatView, false)
 })
+onBeforeUnmount(() => {
+	let parent = document.getElementById('chatList')
+	parent.removeEventListener('click', toChatView, false)
+})
+
 const toSearch = () => {
 	uni.navigateTo({
 		url: '/pages/search/search'
@@ -159,9 +181,6 @@ const personInfo = () => {
 	uni.navigateTo({
 		url: '/pages/userhome/userDetailInfo'
 	})
-}
-const onClick = evt => {
-	console.log(evt)
 }
 
 const toNewGroup = () => {
@@ -185,7 +204,7 @@ const toNewGroup = () => {
 		margin-top: 88rpx;
 		box-sizing: border-box;
 		padding-top: var(--status-bar-height);
-		.frends {
+		.friends {
 			width: 100%;
 			height: 128rpx;
 

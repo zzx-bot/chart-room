@@ -59,12 +59,13 @@
 				</div>
 			</view>
 		</view>
-		<view :class="[{ active: isOk }, 'submit']">注册</view>
+		<view :class="[{ active: isOk }, 'submit']" @tap="signUp">注册</view>
 	</view>
 </template>
 
 <script lang="ts" setup>
 import { ref, reactive, toRefs, computed } from 'vue'
+import { signUpApi } from '../../api/user.js'
 
 interface registerIntf {
 	username: string
@@ -135,6 +136,9 @@ const backLogin = () => {
 	uni.redirectTo({
 		url: '/pages/login/login'
 	})
+}
+const signUp = () => {
+	signUpApi({ data: { name: username.value, email: email.value, password: password.value } })
 }
 </script>
 
